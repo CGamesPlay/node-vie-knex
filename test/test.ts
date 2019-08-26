@@ -1,10 +1,10 @@
-import { makeEntity, QueryBuilder, Viewer as BaseViewer } from "../src/index";
+import { makeEntity, QueryBuilder, Viewer as BaseViewer } from "..";
 
 class Viewer extends BaseViewer {
   userId: string = "1";
 
   user(): Promise<User> {
-    return User.byId(this, this.userId) as Promise<User>;
+    return User.load(this, this.userId) as Promise<User>;
   }
 }
 
@@ -18,12 +18,6 @@ class Entity extends makeEntity<Viewer>() {
 class User extends Entity {
   id?: string;
   name?: string;
-
-  static byId($viewer: Viewer, id: string): Promise<User | null> {
-    return this.query($viewer)
-      .where({ id })
-      .getOne();
-  }
 }
 
 class MessageQueryBuilder extends QueryBuilder<Message, Viewer> {
@@ -47,7 +41,7 @@ class Message extends Entity {
 
 function main() {
   const $viewer = new Viewer({} as any);
-  User.byId($viewer, "1").then(user => {
+  User.load($viewer, "1").then(user => {
     if (!user) return;
     console.log(user.name);
     Message.query($viewer)
