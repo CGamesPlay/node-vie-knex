@@ -1,5 +1,6 @@
 import { Viewer } from "./Viewer";
 import { QueryBuilder } from "./QueryBuilder";
+import { MaybePromise } from "./utils";
 
 export type ID = string;
 
@@ -13,6 +14,7 @@ export interface IEntityStatic<V extends Viewer> {
   query($viewer: V): QueryBuilder<any, V>;
   new ($viewer: V, attrs: object): Entity<V>;
   tableName: string;
+  idColumn: string;
 }
 
 export class Entity<V> {
@@ -21,7 +23,17 @@ export class Entity<V> {
     $viewer: V,
     data: object,
   ): Promise<E | null> {
-    return Promise.resolve(new this($viewer, data)) as Promise<E | null>;
+    // Ideally this would return an already-loaded object if the ID of something
+    // already in the loader existed. DataLoader doesn't provide this
+    // functionality, so we might end up with multiple copies of the same object
+    // if we first load by ID and then pull that same object from an ad-hoc
+    // query.
+    const obj: E = new this($viewer, data) as E;
+    return Promise.resolve(obj.canSee()).then(canSee => {
+      if (!canSee) return null;
+      $viewer.loader(this as any).prime((obj as any)[this.idColumn], obj);
+      return obj;
+    });
   }
 
   static load<E extends Entity<V>, V extends Viewer>(
@@ -29,9 +41,7 @@ export class Entity<V> {
     $viewer: V,
     id: ID,
   ): Promise<E | null> {
-    return this.query($viewer)
-      .where("id", id)
-      .getOne();
+    return $viewer.loader(this as any).load(id);
   }
 
   static query<E extends Entity<V>, V extends Viewer>(
@@ -44,11 +54,16 @@ export class Entity<V> {
   static get tableName(): string {
     throw new Error("tableName not defined on " + this.name);
   }
+  static idColumn = "id";
 
   $viewer: V;
 
   constructor($viewer: V, attrs: object) {
     this.$viewer = $viewer;
     Object.assign(this, attrs);
+  }
+
+  canSee(): MaybePromise<boolean> {
+    return true;
   }
 }

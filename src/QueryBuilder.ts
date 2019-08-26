@@ -13,6 +13,11 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
     return this;
   }
 
+  whereIn(...args: Array<any>): this {
+    this.query.whereIn(args);
+    return this;
+  }
+
   getOne(): Promise<E | null> {
     return this.query.limit(1).then(results => {
       if (results.length === 0) return Promise.resolve(null);
