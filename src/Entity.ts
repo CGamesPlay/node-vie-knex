@@ -51,10 +51,8 @@ export class Entity<V> {
     return new QueryBuilder(this, $viewer);
   }
 
-  static get tableName(): string {
-    throw new Error("tableName not defined on " + this.name);
-  }
-  static idColumn = "id";
+  static tableName: string = undefined as any;
+  static idColumn: string = "id";
 
   $viewer: V;
 

@@ -1,20 +1,25 @@
-import { Knex, Viewer } from "./Viewer";
+import Knex from "knex";
+
+import { Viewer } from "./Viewer";
 import { Entity, IEntityStatic } from "./Entity";
 
 export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
-  private query: Knex;
+  private query: Knex.QueryBuilder;
 
   constructor(private readonly entity: IEntityStatic<V>, protected $viewer: V) {
+    if (!entity.tableName) {
+      throw new Error("tableName not defined on " + entity.name);
+    }
     this.query = this.$viewer.knex(entity.tableName);
   }
 
-  where(...args: Array<any>): this {
-    this.query.where(args);
+  where(first: any, ...args: Array<any>): this {
+    this.query.where(first, ...args);
     return this;
   }
 
-  whereIn(...args: Array<any>): this {
-    this.query.whereIn(args);
+  whereIn(column: string, values: Array<any>): this {
+    this.query.whereIn(column, values);
     return this;
   }
 

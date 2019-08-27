@@ -4,14 +4,23 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc -b src"
+  },
   "devDependencies": {
+    "@types/node": "^12.7.2",
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "jest": "^24.9.0",
+    "knex": "^0.19.2",
+    "sqlite": "^3.0.3",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {
     "dataloader": "^1.4.0"
+  },
+  "peerDependencies": {
+    "knex": "^0.19.2"
   }
 }

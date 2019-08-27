@@ -11,3 +11,7 @@ The three components of VIE are the Viewer, Interactors, and Entities.
 **Interactors** are methods responsible for mutating the underlying data source and may also be used to organize an otherwise complex query. The interactor is responsible for managing the access control for the mutation.
 
 The **Viewer** is the owner of the underlying data source connection and is responsible for providing that connection to Entities and Interactors. The Viewer also provides authentication information to these so that they may enforce access controls as desired.
+
+## Knex implementation
+
+This package provides a Knex implementation of the VIE pattern. See the `example` folder for a walkthrough of the usage.

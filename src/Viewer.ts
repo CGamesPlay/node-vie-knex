@@ -1,13 +1,8 @@
+import Knex from "knex";
 import DataLoader from "dataloader";
+
 import { ID, IEntityStatic } from "./Entity";
 import { mapByKeys } from "./utils";
-
-export interface Knex extends Promise<Array<object>> {
-  (table: string): Knex;
-  where(...args: Array<any>): this;
-  whereIn(...args: Array<any>): this;
-  limit(l: number): this;
-}
 
 export class Viewer {
   _loaders: Map<any, DataLoader<ID, any>> = new Map();
