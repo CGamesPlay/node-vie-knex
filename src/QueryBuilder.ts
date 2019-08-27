@@ -1,7 +1,7 @@
 import Knex from "knex";
 
 import { Viewer } from "./Viewer";
-import { Entity, IEntityStatic } from "./Entity";
+import { Entity, IEntityStatic, ID } from "./Entity";
 
 /**
  * The basic SQL QueryBuilder for retrieving and interacting with Entities. This
@@ -37,6 +37,14 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
     this.query = this.$viewer.knex(entity.tableName);
   }
 
+  /**
+   * Set query debugging for this query.
+   */
+  debug(enabled: boolean = true): this {
+    this.query.debug(enabled);
+    return this;
+  }
+
   where(first: any, ...args: Array<any>): this {
     this.query.where(first, ...args);
     return this;
@@ -45,6 +53,15 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
   whereIn(column: string, values: Array<any>): this {
     this.query.whereIn(column, values);
     return this;
+  }
+
+  whereBetween(column: string, range: [any, any]): this {
+    this.query.whereBetween(column, range);
+    return this;
+  }
+
+  update(first: any, second?: any, third?: any): Promise<void> {
+    return this.query.update(first, second, third).then(() => undefined);
   }
 
   /**
@@ -68,5 +85,29 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
         arr => <any>arr.filter(x => x),
       ),
     );
+  }
+
+  /**
+   * Execute an insert query and return the newly-created entity. By default,
+   * fields that are not specified in the data will not be assigned on the
+   * resulting entity, except for the ID field. Even if the insert succeeds, if
+   * the resulting object does not pass an [[Entity.canSee]] check, then the
+   * promise will resolve to null. If the insert fails the promise will be
+   * rejected.
+   *
+   * @param refetch If you want to issue a second query to fetch the record from
+   * the database after inserting, so that default values will be present on the
+   * returned Entity, set this to true.
+   */
+  insert(data: object, refetch: boolean = false): Promise<E | null> {
+    if (Array.isArray(data)) throw new Error("Bulk insert not supported");
+    return this.query.insert(data).then((res: Array<number>) => {
+      if (refetch) {
+        return this.entity.load(this.$viewer, res[0] as any);
+      } else {
+        let record = { [this.entity.idColumn]: res[0], ...data };
+        return this.entity.from(this.$viewer, record);
+      }
+    }) as Promise<E | null>;
   }
 }

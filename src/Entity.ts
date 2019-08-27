@@ -135,4 +135,27 @@ export class Entity<V extends Viewer> {
   canSee(): MaybePromise<boolean> {
     return true;
   }
+
+  /**
+   * This method is a shortcut for queries operating on the specific Entity. It
+   * is useful when constructing update queries.
+   */
+  query(): QueryBuilder<this, V> {
+    const ctor: IEntityStatic<V> = this.constructor as any;
+    return ctor
+      .query(this.$viewer)
+      .where(ctor.idColumn, (this as any)[ctor.idColumn]);
+  }
+
+  /**
+   * This method is used to update the attributes on this Entity and then issue
+   * an UPDATE query to update the underlying database as well. The resolved
+   * promise will be the updated Entity.
+   */
+  update(attrs: Partial<this>): Promise<this> {
+    Object.assign(this, attrs);
+    return this.query()
+      .update(attrs)
+      .then(() => this);
+  }
 }
