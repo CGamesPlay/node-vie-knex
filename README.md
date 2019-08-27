@@ -14,4 +14,4 @@ The **Viewer** is the owner of the underlying data source connection and is resp
 
 ## Knex implementation
 
-This package provides a Knex implementation of the VIE pattern. See the `example` folder for a walkthrough of the usage.
+This package provides a Knex implementation of the VIE pattern. See the `example` folder for a walkthrough of the usage and the [docs](docs/) folder for detailed documentation.
