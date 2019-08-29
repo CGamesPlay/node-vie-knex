@@ -20,12 +20,12 @@ export type ID = string;
  * @typeparam V The Viewer subclass that the Entity uses.
  */
 export interface IEntityStatic<V extends Viewer> {
-  from($viewer: V, attrs: object): Promise<Entity<V> | null>;
+  from($viewer: V, attrs: object): Promise<Entity<V> | undefined>;
   load<E extends IEntityStatic<V>>(
     this: E,
     $viewer: V,
     id: ID,
-  ): Promise<InstanceType<E> | null>;
+  ): Promise<InstanceType<E> | undefined>;
   query($viewer: V): QueryBuilder<any, V>;
   new ($viewer: V, attrs: object): Entity<V>;
   tableName: string;
@@ -61,7 +61,7 @@ export class Entity<V extends Viewer> {
     this: IEntityStatic<V>,
     $viewer: V,
     data: object,
-  ): Promise<E | null> {
+  ): Promise<E | undefined> {
     // Ideally this would return an already-loaded object if the ID of something
     // already in the loader existed. DataLoader doesn't provide this
     // functionality, so we might end up with multiple copies of the same object
@@ -69,7 +69,7 @@ export class Entity<V extends Viewer> {
     // query.
     const obj: E = new this($viewer, data) as E;
     return Promise.resolve(obj.canSee()).then(canSee => {
-      if (!canSee) return null;
+      if (!canSee) return undefined;
       $viewer.loader(this as any).prime((obj as any)[this.idColumn], obj);
       return obj;
     });
@@ -84,7 +84,7 @@ export class Entity<V extends Viewer> {
     this: IEntityStatic<V>,
     $viewer: V,
     id: ID,
-  ): Promise<E | null> {
+  ): Promise<E | undefined> {
     return $viewer.loader(this as any).load(id);
   }
 
@@ -137,6 +137,14 @@ export class Entity<V extends Viewer> {
   }
 
   /**
+   * When serializing an Entity to JSON, ensure that only database attributes
+   * are returned.
+   */
+  toJSON(): object {
+    return { ...this, $viewer: undefined };
+  }
+
+  /**
    * This method is a shortcut for queries operating on the specific Entity. It
    * is useful when constructing update queries.
    */
@@ -148,14 +156,26 @@ export class Entity<V extends Viewer> {
   }
 
   /**
-   * This method is used to update the attributes on this Entity and then issue
-   * an UPDATE query to update the underlying database as well. The resolved
-   * promise will be the updated Entity.
+   * Update the attributes on this Entity and then issue an UPDATE query to
+   * update the underlying database as well. The resolved promise will be the
+   * updated Entity.
    */
   update(attrs: Partial<this>): Promise<this> {
     Object.assign(this, attrs);
     return this.query()
       .update(attrs)
       .then(() => this);
+  }
+
+  /**
+   * Delete the Entity and clear out the Viewer's caches.
+   */
+  delete(): Promise<void> {
+    const ctor: IEntityStatic<Viewer> = this.constructor as any;
+    return this.query()
+      .delete()
+      .then(() => {
+        this.$viewer.loader(ctor).clear((this as any)[ctor.idColumn]);
+      });
   }
 }

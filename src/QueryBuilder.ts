@@ -64,6 +64,10 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
     return this.query.update(first, second, third).then(() => undefined);
   }
 
+  delete(): Promise<void> {
+    return this.query.delete();
+  }
+
   /**
    * Execute the query and return a single Entity as a result, or null if there
    * are none. The entity must be visible to the Viewer, see [[Entity.canSee]].

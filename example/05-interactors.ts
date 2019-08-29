@@ -26,6 +26,10 @@ function updateUserName(
   return user.update({ name: name });
 }
 
+function deleteUser($viewer: Viewer, user: User): Promise<void> {
+  return user.delete();
+}
+
 function main() {
   return getKnex().then(knex => {
     const $viewer = new Viewer(knex);
@@ -33,6 +37,9 @@ function main() {
       console.log("User created", user.name, user.id);
       return updateUserName($viewer, user, "David").then(user => {
         console.log("Name changed", user.name);
+        return deleteUser($viewer, user).then(() => {
+          console.log("User deleted");
+        });
       });
     });
   });
