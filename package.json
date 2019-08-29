@@ -1,9 +1,14 @@
 {
   "name": "@cgamesplay/vie-knex",
-  "version": "1.0.0",
+  "version": "1.1.1",
+  "description": "implemented the VIE pattern with Knex",
+  "license": "MIT",
+  "homepage": "https://github.com/CGamesPlay/node-vie-knex",
+  "bugs": "https://github.com/CGamesPlay/node-vie-knex/issues",
+  "repository": "github:CGamesPlay/node-vie-knex",
+  "author": "Ryan Patterson <ry@cgamesplay.com>",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "license": "MIT",
   "scripts": {
     "build": "tsc -b src",
     "doc": "typedoc --out docs src"
@@ -24,5 +29,6 @@
   },
   "peerDependencies": {
     "knex": "^0.19.2"
-  }
+  },
+  "files": ["dist", "docs", "example", "README.md"]
 }
