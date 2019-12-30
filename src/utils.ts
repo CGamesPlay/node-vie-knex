@@ -33,7 +33,7 @@ export function after<T, U>(
  * @hidden
  **/
 export function mapByKeys<V>(
-  ids: Array<string>,
+  ids: readonly string[],
   key: keyof V,
   objs: Array<V>,
 ): Array<V | null> {

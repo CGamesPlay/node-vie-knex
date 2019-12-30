@@ -25,7 +25,7 @@ export interface IEntityStatic<V extends Viewer> {
     this: E,
     $viewer: V,
     id: ID,
-  ): Promise<InstanceType<E> | undefined>;
+  ): Promise<InstanceType<E> | null>;
   query($viewer: V): QueryBuilder<any, V>;
   new ($viewer: V, attrs: object): Entity<V>;
   tableName: string;
@@ -84,7 +84,7 @@ export class Entity<V extends Viewer> {
     this: IEntityStatic<V>,
     $viewer: V,
     id: ID,
-  ): Promise<E | undefined> {
+  ): Promise<E | null> {
     return $viewer.loader(this as any).load(id);
   }
 

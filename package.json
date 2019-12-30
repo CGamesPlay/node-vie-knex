@@ -24,6 +24,9 @@
     "typedoc": "^0.15.0",
     "typescript": "^3.5.3"
   },
+  "peerDependencies": {
+    "knex": "^0.20.6"
+  },
   "dependencies": {
     "dataloader": "^2.0.0"
   },

@@ -50,8 +50,18 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
     return this;
   }
 
-  whereIn(column: string, values: Array<any>): this {
-    this.query.whereIn(column, values);
+  whereNot(first: any, ...args: Array<any>): this {
+    this.query.whereNot(first, ...args);
+    return this;
+  }
+
+  whereIn(first: any, second: any): this {
+    this.query.whereIn(first, second);
+    return this;
+  }
+
+  whereNotIn(first: any, second: any): this {
+    this.query.whereNotIn(first, second);
     return this;
   }
 
@@ -84,7 +94,7 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
   }
 
   delete(): Promise<void> {
-    return this.query.delete();
+    return Promise.resolve(this.query.delete());
   }
 
   /**
@@ -104,9 +114,9 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
    */
   getAll(): Promise<Array<E>> {
     return this.query.then(results =>
-      Promise.all(results.map(r => this.entity.from(this.$viewer, r))).then(
-        arr => <any>arr.filter(x => x),
-      ),
+      Promise.all(
+        results.map((r: any) => this.entity.from(this.$viewer, r)),
+      ).then(arr => <any>arr.filter(x => x)),
     );
   }
 

@@ -28,7 +28,7 @@ export class Viewer {
     if (!this._loaders.has(entity)) {
       this._loaders.set(
         entity,
-        new DataLoader((ids: Array<ID>) =>
+        new DataLoader((ids: readonly string[]) =>
           entity
             .query(this)
             .whereIn(entity.idColumn, ids)

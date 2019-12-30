@@ -1,8 +1,8 @@
 import { QueryBuilder } from "./QueryBuilder";
 import { Viewer } from "./Viewer";
-import { IEntityStatic, Entity } from "./Entity";
+import { IEntityStatic, Entity, ID } from "./Entity";
 
-export { QueryBuilder, Viewer, IEntityStatic, Entity };
+export { QueryBuilder, Viewer, IEntityStatic, Entity, ID };
 
 /**
  * This method is a helper for TypeScript to prepare the root Entity class. This
