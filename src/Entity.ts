@@ -89,6 +89,21 @@ export class Entity<V extends Viewer> {
   }
 
   /**
+   * Basic method to load multiple Entity by their IDs. This method is batched
+   * and memoized using DataLoader, so if you request the same ID multiple
+   * times, you will receive the same Promise object each time. If any of the
+   * Entities fails to load, the corresponding entry in the array will be an
+   * Error object.
+   */
+  static loadMany<E extends Entity<V>, V extends Viewer>(
+    this: IEntityStatic<V>,
+    $viewer: V,
+    ids: ID[],
+  ): Promise<Array<E | Error>> {
+    return $viewer.loader(this as any).loadMany(ids);
+  }
+
+  /**
    * Main method to perform complex queries on Entities.
    */
   static query<E extends Entity<V>, V extends Viewer>(
