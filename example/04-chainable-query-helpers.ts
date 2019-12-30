@@ -1,4 +1,4 @@
-import { makeEntity, Viewer as VIEViewer, QueryBuilder } from "..";
+import { makeEntity, Viewer as VIEViewer, QueryBuilder } from "../src";
 import { Knex, getKnex } from "./knex";
 
 class Viewer extends VIEViewer {
@@ -55,21 +55,21 @@ class Message extends Entity {
 function main() {
   return getKnex().then(knex => {
     const $viewer = new Viewer(knex, "1");
-    return Promise.all([$viewer.user(), User.load($viewer, "2")]).then(
-      ([alice, bob]: [User, User | null]) => {
-        if (!bob) throw new Error("User Bob not found");
-        console.log(alice.name, "<-", bob.name);
-        // Here we can use the QueryBuilder methods in a chain to achieve the
-        // behavior we want.
-        return Message.query($viewer)
-          .whereRecipient(alice.id as string)
-          .whereSender(bob.id as string)
-          .getAll()
-          .then((messages: Array<Message>) => {
-            messages.forEach(m => console.log(m.text));
-          });
-      },
-    );
+    return (Promise.all([$viewer.user(), User.load($viewer, "2")]) as Promise<
+      [User, User | null]
+    >).then(([alice, bob]: [User, User | null]) => {
+      if (!bob) throw new Error("User Bob not found");
+      console.log(alice.name, "<-", bob.name);
+      // Here we can use the QueryBuilder methods in a chain to achieve the
+      // behavior we want.
+      return Message.query($viewer)
+        .whereRecipient(alice.id as string)
+        .whereSender(bob.id as string)
+        .getAll()
+        .then((messages: Array<Message>) => {
+          messages.forEach(m => console.log(m.text));
+        });
+    });
   });
 }
 

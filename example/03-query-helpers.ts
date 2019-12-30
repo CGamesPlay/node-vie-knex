@@ -1,4 +1,4 @@
-import { makeEntity, Viewer as VIEViewer } from "..";
+import { makeEntity, Viewer as VIEViewer } from "../src";
 import { Knex, getKnex } from "./knex";
 
 class Viewer extends VIEViewer {

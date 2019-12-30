@@ -1,4 +1,4 @@
-import { makeEntity, Viewer } from "..";
+import { makeEntity, Viewer } from "../src";
 import { Knex, getKnex } from "./knex";
 
 const Entity = makeEntity<Viewer>();

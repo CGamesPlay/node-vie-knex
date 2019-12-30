@@ -1,4 +1,4 @@
-import { makeEntity, Viewer as VIEViewer } from "..";
+import { makeEntity, Viewer as VIEViewer } from "../src";
 import { Knex, getKnex } from "./knex";
 
 // In this example we subclass our Viewer to store the logged in userId. We also

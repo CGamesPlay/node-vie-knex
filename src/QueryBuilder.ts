@@ -60,6 +60,25 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
     return this;
   }
 
+  limit(limit: number): this {
+    this.query.limit(limit);
+    return this;
+  }
+
+  offset(offset: number): this {
+    this.query.offset(offset);
+    return this;
+  }
+
+  // See knex.orderBy for documentation. Examples:
+  // - `orderBy('name')`
+  // - `orderBy('name', 'desc')`
+  // - `orderBy(['email', { column: 'age', order: 'desc' }])`
+  orderBy(column: any, ...rest: any): this {
+    this.query.orderBy(column, ...rest);
+    return this;
+  }
+
   update(first: any, second?: any, third?: any): Promise<void> {
     return this.query.update(first, second, third).then(() => undefined);
   }

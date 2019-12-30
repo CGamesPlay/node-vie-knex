@@ -1,4 +1,4 @@
-import { makeEntity, Viewer } from "..";
+import { makeEntity, Viewer } from "../src";
 import { Knex, getKnex } from "./knex";
 
 // When using TypeScript, you need to use the makeEntity function to provide the
