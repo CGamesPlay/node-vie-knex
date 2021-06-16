@@ -89,6 +89,38 @@ export class QueryBuilder<E extends Entity<V>, V extends Viewer> {
     return this;
   }
 
+  count(...rest: any) {
+    return this.query.count(...rest);
+  }
+
+  countDistinct(...rest: any) {
+    return this.query.countDistinct(...rest);
+  }
+
+  min(...rest: any) {
+    return this.query.min(...rest);
+  }
+
+  max(...rest: any) {
+    return this.query.max(...rest);
+  }
+
+  sum(...rest: any) {
+    return this.query.sum(...rest);
+  }
+
+  sumDistinct(...rest: any) {
+    return this.query.sumDistinct(...rest);
+  }
+
+  avg(...rest: any) {
+    return this.query.avg(...rest);
+  }
+
+  avgDistinct(...rest: any) {
+    return this.query.avgDistinct(...rest);
+  }
+
   update(first: any, second?: any, third?: any): Promise<void> {
     return this.query.update(first, second, third).then(() => undefined);
   }
