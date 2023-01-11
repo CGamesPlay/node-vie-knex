@@ -18,14 +18,14 @@
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "jest": "^24.9.0",
-    "knex": "^0.20.6",
+    "knex": "^2.4.0",
     "sqlite": "^3.0.3",
     "ts-node": "^8.3.0",
     "typedoc": "^0.15.0",
     "typescript": "^3.5.3"
   },
   "peerDependencies": {
-    "knex": "^0.20.6"
+    "knex": "^2.4.0"
   },
   "dependencies": {
     "dataloader": "^2.0.0"
